@@ -7,7 +7,7 @@
 
 using namespace std;
 
-string instruction(string);
+void instruction(string);
 
 int main(int argc, char *argv[]){
     // Reads in input .obj file, and determine if file exists.
@@ -25,11 +25,8 @@ int main(int argc, char *argv[]){
     string word; 
 
     while(std::getline(inFile, strInput)){
-        cout << strInput << "\n";
-        
-        cout << instruction(strInput) << "\n";
-        
-        cout << "end" << "\n\n";
+        instruction(strInput);
+        cout << "\n";
     }
 
     return 0;

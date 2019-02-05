@@ -1,3 +1,4 @@
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
@@ -5,7 +6,7 @@
 
 #include "instruction.h"
 
-std::string instruction(std::string s){
+void instruction(std::string s){
     
     // Initialize stringstream, and push address/instruction into vector "data"
     std::stringstream ss(s);
@@ -77,16 +78,16 @@ std::string instruction(std::string s){
     format["B0"] = "popq";
     
     if(data[1][0] == '0' || data[1][0] == '1' || data[1][0] == '9')
-        return data[0] + format[data[1].substr(0, 2)];
+        printf("%s %s", data[0].c_str(), format[data[1].substr(0, 2)].c_str());
     
     else if(data[1][0] == '2' || data[1][0] == '4' || data[1][0] == '5' || data[1][0] == '6')
-        return data[0] + format[data[1].substr(0, 2)] + registers(data[1][2]) + registers(data[1][3]);
+        printf("%s %s %s %s", data[0].c_str(), format[data[1].substr(0, 2)].c_str(), registers(data[1][2]).c_str(), registers(data[1][3]).c_str());
    
     else if(data[1][0] == '3')
-        return data[0] + format[data[1].substr(0, 2)] + offset(data[1].substr(4, data[1].length()));
+        printf("%s %s $0x%.3x %s", data[0].c_str(), format[data[1].substr(0, 2)].c_str(), offset(data[0], data[1].substr(4, data[1].length())), registers(data[1][3]).c_str());
     
     else
-        return data[0] + format[data[1].substr(0, 2)];
+        printf("%s %s", data[0].c_str(), format[data[1].substr(0, 2)].c_str());
 
 }
 
@@ -126,11 +127,19 @@ std::string registers(char c){
     return "%r" + reg_num[c];
 }
 
-std::string offset(std::string s){
-    std::string t = "";
+int offset(std::string s, std::string t){
+    std::string u = "";
     
-    for(int i = s.length() / 2; i >= 0; i--){
-        t += s.substr(i*2, 2);
+    for(int i = t.length() / 2; i >= 0; i--){
+        u += t.substr(i*2, 2);
     }
-    return t;
+    
+    u = u.erase(0, u.find_first_not_of('0'));
+    
+    int output1, output2;
+     
+    std::stringstream(u) >> std::hex >> output1;
+    std::stringstream(s) >> std::hex >> output2;
+    
+    return output1 + output2;
 }
