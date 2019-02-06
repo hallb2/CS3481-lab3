@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 #include "instruction.h"
 
 using namespace std;
@@ -18,15 +19,27 @@ int main(int argc, char *argv[]){
         exit(1);
     }
 
-    stringstream ss;
-
     string strInput;
 
-    string word; 
-
     while(std::getline(inFile, strInput)){
-        instruction(strInput);
-        cout << "\n";
+        std::stringstream ss(strInput);
+        std::string word;
+        std::vector<std::string> data;
+
+        while(ss >> word)
+            data.push_back(word);
+        
+        if(data.size() == 1){
+            cout << data[0] << '\n';
+            continue;
+        }
+
+        else{
+            cout << data[0] << ' ';
+            instruction(data[1]);
+            cout << '\n';
+        }
+            
     }
 
     return 0;

@@ -5,7 +5,7 @@ CPP = $(CXX) $(CXXFLAGS)
 OBJ = y86dis.o instruction.o
 
 main: $(OBJ)
-	$(CPP) $(OBJ) -o main
+	$(CPP) $(OBJ) -o y86dis 
 
 y86dis.o: y86dis.cpp
 
