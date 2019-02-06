@@ -1,13 +1,10 @@
 #include <iostream>
-#include <map>
-#include <sstream>
+#include <map> // std::map
 #include <string>
-#include <vector>
-
 #include "instruction.h"
 
-const char* extractInstr(std::string s){
-    // Declare mappings via "map"
+// Declare opcode mappings
+const char* extractInstr(std::string s) {
     std::map <std::string, std::string> format;
 
     format["00"] = "halt";
@@ -43,8 +40,10 @@ const char* extractInstr(std::string s){
     return format[s].c_str();
 }
 
-std::string convertReg(char c){
+// Declare register mappings
+std::string convertReg(char c) {
     std::map <char, std::string> reg_num;
+    
     reg_num['0'] = "ax";
     reg_num['1'] = "cx";
     reg_num['2'] = "dx";
@@ -64,21 +63,36 @@ std::string convertReg(char c){
     return "%r" + reg_num[c];
 }
 
-std::string littleToBigEndian(std::string s){
+// Defined by namesake
+std::string littleToBigEndian(std::string s) {
     std::string t = "";
     
-    for(int i = s.length() / 2; i >= 0; i--){
+    for(int i = s.length() / 2; i >= 0; i--) {
         t += s.substr(i*2, 2);
     }
     
-    return "0x" + t;
+    return t;
 }
 
-void instruction(std::string s){
+// Trims address storage location by removing leading zeros
+std::string offset(std::string s) {
+    std::string t = littleToBigEndian(s);
+    
+    t = t.erase(0, t.find_first_not_of('0'));
+   
+    if(t == "")
+        return "0x0";
+
+    else
+        return "0x" + t;
+}
+
+// Formats output dependent upon opcode, and formats using printf
+void printInstruction(std::string s) {
     std::string instr = s.substr(0, 2);
 
     if(s.length() == 16)
-        printf("%s %s", ".quad", littleToBigEndian(s).c_str());
+        printf("%s 0x%s", ".quad", littleToBigEndian(s).c_str());
     
     else if(s[0] == '0' || s[0] == '1' || s[0] == '9')
         printf("%s", extractInstr(instr));
@@ -103,22 +117,4 @@ void instruction(std::string s){
     
     else
         printf("%s", "illegal op");
-        //printf("%s", extractInstr(instr));
-
-}
-
-std::string offset(std::string s){
-    std::string t = "";
-    
-    for(int i = s.length() / 2; i >= 0; i--){
-        t += s.substr(i*2, 2);
-    }
-    
-    t = t.erase(0, t.find_first_not_of('0'));
-   
-    if(t == "")
-        return "0x0";
-
-    else
-        return "0x" + t;
 }
